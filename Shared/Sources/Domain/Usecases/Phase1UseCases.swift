@@ -293,10 +293,12 @@ public final class LogHabitUseCase {
 
     private let habitRepository: HabitLogRepository
     private let reminderRepository: ReminderRepository
+    private let healthKitManager: HealthKitManager
 
-    public init(habitRepository: HabitLogRepository, reminderRepository: ReminderRepository) {
+    public init(habitRepository: HabitLogRepository, reminderRepository: ReminderRepository, healthKitManager: HealthKitManager = .shared) {
         self.habitRepository = habitRepository
         self.reminderRepository = reminderRepository
+        self.healthKitManager = healthKitManager
     }
 
     public enum HabitType {
@@ -306,8 +308,12 @@ public final class LogHabitUseCase {
 
     public func execute(_ type: HabitType) async throws -> HabitLog {
         switch type {
-        case .hydration: try await habitRepository.incrementHydration()
-        case .posture:   try await habitRepository.incrementPosture()
+        case .hydration: 
+            try await habitRepository.incrementHydration()
+            // Log 250ml by default when saying "drank water"
+            try? await healthKitManager.logWater(ml: 250.0)
+        case .posture:   
+            try await habitRepository.incrementPosture()
         }
         return try await habitRepository.logForToday()
     }

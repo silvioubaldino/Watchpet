@@ -24,8 +24,8 @@ public final class IntegrationRegistry: ObservableObject {
 
     private func registerDefaultConnectors() {
         // Fase 4: Notion e Google Calendar
-        // register(NotionConnector())
-        // register(GoogleCalendarConnector())
+        register(NotionConnector())
+        register(GoogleCalendarConnector())
         // register(AppleNotesConnector())
         //
         // Fase 5:

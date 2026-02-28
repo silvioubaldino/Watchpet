@@ -44,6 +44,11 @@ struct MainWatchView: View {
             // Tab 3 — Lembretes
             RemindersView(container: container)
                 .tag(2)
+
+            // Tab 4 — Notas
+            NotesView()
+                .environmentObject(container)
+                .tag(3)
         }
         .tabViewStyle(.page)
         .onAppear {
@@ -55,9 +60,18 @@ struct MainWatchView: View {
 
     private func requestPermissions() {
         Task {
-            let granted = await container.speechTranscriber.requestPermissions()
-            if !granted {
+            let speechGranted = await container.speechTranscriber.requestPermissions()
+            if !speechGranted {
                 print("⚠️ Permissão de microfone/speech negada")
+            }
+            
+            do {
+                let healthGranted = try await HealthKitManager.shared.requestAuthorization()
+                if !healthGranted {
+                    print("⚠️ Permissão de HealthKit negada ou indisponível")
+                }
+            } catch {
+                print("⚠️ Erro ao pedir HealthKit: \(error)")
             }
         }
     }

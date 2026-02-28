@@ -40,6 +40,7 @@ public final class WatchAppContainer: ObservableObject {
 
     // MARK: UseCases — Note
     public let saveNote: SaveNoteUseCase
+    public let fetchNotes: FetchNotesUseCase
 
     // MARK: UseCases — Habit
     public let logHabit: LogHabitUseCase
@@ -94,6 +95,7 @@ public final class WatchAppContainer: ObservableObject {
             habitRepository: habitRepo,
             syncQueueRepository: syncQueueRepo
         )
+        self.fetchNotes = FetchNotesUseCase(noteRepository: noteRepo)
         self.logHabit = LogHabitUseCase(habitRepository: habitRepo, reminderRepository: reminderRepo)
         self.getDailySummary = GetDailySummaryUseCase(
             habitRepository: habitRepo,

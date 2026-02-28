@@ -1,0 +1,571 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		81FB819E2F537BB200F9768A /* WatchPet Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 81FB819D2F537BB200F9768A /* WatchPet Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		81FB81B32F537C1F00F9768A /* WatchPetShared in Frameworks */ = {isa = PBXBuildFile; productRef = 81FB81B22F537C1F00F9768A /* WatchPetShared */; };
+		81FB81B72F537D7F00F9768A /* WatchPetShared in Frameworks */ = {isa = PBXBuildFile; productRef = 81FB81B62F537D7F00F9768A /* WatchPetShared */; };
+		81FB81BA2F537E1200F9768A /* WatchPetShared in Frameworks */ = {isa = PBXBuildFile; productRef = 81FB81B92F537E1200F9768A /* WatchPetShared */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		81FB819F2F537BB200F9768A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 81FB81882F537BB000F9768A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 81FB819C2F537BB200F9768A;
+			remoteInfo = "WatchPet Watch App";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		81FB81AD2F537BB400F9768A /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				81FB819E2F537BB200F9768A /* WatchPet Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		81FB81902F537BB000F9768A /* WatchPet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WatchPet.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		81FB819D2F537BB200F9768A /* WatchPet Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "WatchPet Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		81FB81922F537BB000F9768A /* WatchPet */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = WatchPet;
+			sourceTree = "<group>";
+		};
+		81FB81A12F537BB200F9768A /* WatchPet Watch App */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "WatchPet Watch App";
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		81FB818D2F537BB000F9768A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				81FB81B32F537C1F00F9768A /* WatchPetShared in Frameworks */,
+				81FB81B72F537D7F00F9768A /* WatchPetShared in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		81FB819A2F537BB200F9768A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				81FB81BA2F537E1200F9768A /* WatchPetShared in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		81FB81872F537BB000F9768A = {
+			isa = PBXGroup;
+			children = (
+				81FB81922F537BB000F9768A /* WatchPet */,
+				81FB81A12F537BB200F9768A /* WatchPet Watch App */,
+				81FB81B82F537E0C00F9768A /* Frameworks */,
+				81FB81912F537BB000F9768A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		81FB81912F537BB000F9768A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				81FB81902F537BB000F9768A /* WatchPet.app */,
+				81FB819D2F537BB200F9768A /* WatchPet Watch App.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		81FB81B82F537E0C00F9768A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		81FB818F2F537BB000F9768A /* WatchPet */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 81FB81AE2F537BB400F9768A /* Build configuration list for PBXNativeTarget "WatchPet" */;
+			buildPhases = (
+				81FB818C2F537BB000F9768A /* Sources */,
+				81FB818D2F537BB000F9768A /* Frameworks */,
+				81FB818E2F537BB000F9768A /* Resources */,
+				81FB81AD2F537BB400F9768A /* Embed Watch Content */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				81FB81A02F537BB200F9768A /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				81FB81922F537BB000F9768A /* WatchPet */,
+			);
+			name = WatchPet;
+			packageProductDependencies = (
+				81FB81B22F537C1F00F9768A /* WatchPetShared */,
+				81FB81B62F537D7F00F9768A /* WatchPetShared */,
+			);
+			productName = WatchPet;
+			productReference = 81FB81902F537BB000F9768A /* WatchPet.app */;
+			productType = "com.apple.product-type.application";
+		};
+		81FB819C2F537BB200F9768A /* WatchPet Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 81FB81AA2F537BB400F9768A /* Build configuration list for PBXNativeTarget "WatchPet Watch App" */;
+			buildPhases = (
+				81FB81992F537BB200F9768A /* Sources */,
+				81FB819A2F537BB200F9768A /* Frameworks */,
+				81FB819B2F537BB200F9768A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				81FB81A12F537BB200F9768A /* WatchPet Watch App */,
+			);
+			name = "WatchPet Watch App";
+			packageProductDependencies = (
+				81FB81B92F537E1200F9768A /* WatchPetShared */,
+			);
+			productName = "WatchPet Watch App";
+			productReference = 81FB819D2F537BB200F9768A /* WatchPet Watch App.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		81FB81882F537BB000F9768A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2630;
+				LastUpgradeCheck = 2630;
+				TargetAttributes = {
+					81FB818F2F537BB000F9768A = {
+						CreatedOnToolsVersion = 26.3;
+					};
+					81FB819C2F537BB200F9768A = {
+						CreatedOnToolsVersion = 26.3;
+					};
+				};
+			};
+			buildConfigurationList = 81FB818B2F537BB000F9768A /* Build configuration list for PBXProject "WatchPet" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 81FB81872F537BB000F9768A;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				81FB81B52F537D7F00F9768A /* XCLocalSwiftPackageReference "../../Watchpet" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 81FB81912F537BB000F9768A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				81FB818F2F537BB000F9768A /* WatchPet */,
+				81FB819C2F537BB200F9768A /* WatchPet Watch App */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		81FB818E2F537BB000F9768A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		81FB819B2F537BB200F9768A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		81FB818C2F537BB000F9768A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		81FB81992F537BB200F9768A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		81FB81A02F537BB200F9768A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 81FB819C2F537BB200F9768A /* WatchPet Watch App */;
+			targetProxy = 81FB819F2F537BB200F9768A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		81FB81A82F537BB400F9768A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = DN85W3RW58;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		81FB81A92F537BB400F9768A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = DN85W3RW58;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		81FB81AB2F537BB400F9768A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "WatchPet Watch App/WatchPet Watch App.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DN85W3RW58;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = WatchPet;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Ler dados de atividade física do app Saúde.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Registrar informações de hidratação no app Saúde.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "O microfone é usado para você conversar com o Pet.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Precisamos do reconhecimento de voz para entender você.";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.silvioubaldino.WatchPet;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.silvioubaldino.WatchPet.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Debug;
+		};
+		81FB81AC2F537BB400F9768A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "WatchPet Watch App/WatchPet Watch App.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DN85W3RW58;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = WatchPet;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Ler dados de atividade física do app Saúde.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Registrar informações de hidratação no app Saúde.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "O microfone é usado para você conversar com o Pet.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Precisamos do reconhecimento de voz para entender você.";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.silvioubaldino.WatchPet;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.silvioubaldino.WatchPet.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Release;
+		};
+		81FB81AF2F537BB400F9768A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = WatchPet/WatchPet.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DN85W3RW58;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = WatchPet;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Ler dados de atividade física do app Saúde.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Registrar informações de hidratação no app Saúde.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "O microfone é usado para você conversar com o Pet.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Precisamos do reconhecimento de voz para entender você.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.silvioubaldino.WatchPet;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		81FB81B02F537BB400F9768A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = WatchPet/WatchPet.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DN85W3RW58;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = WatchPet;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Ler dados de atividade física do app Saúde.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Registrar informações de hidratação no app Saúde.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "O microfone é usado para você conversar com o Pet.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Precisamos do reconhecimento de voz para entender você.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.silvioubaldino.WatchPet;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		81FB818B2F537BB000F9768A /* Build configuration list for PBXProject "WatchPet" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				81FB81A82F537BB400F9768A /* Debug */,
+				81FB81A92F537BB400F9768A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		81FB81AA2F537BB400F9768A /* Build configuration list for PBXNativeTarget "WatchPet Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				81FB81AB2F537BB400F9768A /* Debug */,
+				81FB81AC2F537BB400F9768A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		81FB81AE2F537BB400F9768A /* Build configuration list for PBXNativeTarget "WatchPet" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				81FB81AF2F537BB400F9768A /* Debug */,
+				81FB81B02F537BB400F9768A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		81FB81B52F537D7F00F9768A /* XCLocalSwiftPackageReference "../../Watchpet" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../Watchpet;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		81FB81B22F537C1F00F9768A /* WatchPetShared */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WatchPetShared;
+		};
+		81FB81B62F537D7F00F9768A /* WatchPetShared */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WatchPetShared;
+		};
+		81FB81B92F537E1200F9768A /* WatchPetShared */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 81FB81B52F537D7F00F9768A /* XCLocalSwiftPackageReference "../../Watchpet" */;
+			productName = WatchPetShared;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 81FB81882F537BB000F9768A /* Project object */;
+}

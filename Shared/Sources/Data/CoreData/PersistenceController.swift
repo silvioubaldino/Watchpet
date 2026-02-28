@@ -30,7 +30,10 @@ public final class PersistenceController {
     }
 
     public init(inMemory: Bool = false) {
-        container = NSPersistentContainer(name: "WatchPet")
+        let modelURL = Bundle.module.url(forResource: "WatchPet", withExtension: "mom")!
+        let model = NSManagedObjectModel(contentsOf: modelURL)!
+        
+        container = NSPersistentContainer(name: "WatchPet", managedObjectModel: model)
 
         if inMemory {
             container.persistentStoreDescriptions.first?.url = URL(fileURLWithPath: "/dev/null")

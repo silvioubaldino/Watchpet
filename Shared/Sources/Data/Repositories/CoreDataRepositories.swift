@@ -525,6 +525,66 @@ public final class UserDefaultsProfileRepository: UserProfileRepository {
     }
 }
 
+// MARK: - CoreDataIntegrationConfigRepository
+
+public final class CoreDataIntegrationConfigRepository: IntegrationConfigRepository {
+
+    private let context: NSManagedObjectContext
+
+    public init(context: NSManagedObjectContext) {
+        self.context = context
+    }
+
+    public func fetchAll() async throws -> [IntegrationConfig] {
+        try await context.perform {
+            let request = CDIntegrationConfig.fetchRequest()
+            return try self.context.fetch(request).map { $0.toDomain() }
+        }
+    }
+
+    public func fetch(connectorID: String) async throws -> IntegrationConfig? {
+        try await context.perform {
+            let request = CDIntegrationConfig.fetchRequest()
+            request.predicate = NSPredicate(format: "connectorID == %@", connectorID)
+            request.fetchLimit = 1
+            return try self.context.fetch(request).first?.toDomain()
+        }
+    }
+
+    public func save(_ config: IntegrationConfig) async throws {
+        try await context.perform {
+            let request = CDIntegrationConfig.fetchRequest()
+            request.predicate = NSPredicate(format: "connectorID == %@", config.connectorID)
+            request.fetchLimit = 1
+            
+            let cd = try self.context.fetch(request).first ?? CDIntegrationConfig(context: self.context)
+            cd.id = config.id
+            cd.connectorID = config.connectorID
+            cd.serviceName = config.serviceName
+            cd.isEnabled = config.isEnabled
+            cd.lastSyncedAt = config.lastSyncedAt
+            cd.scopes = config.scopes
+            try self.context.save()
+        }
+    }
+
+    public func update(_ config: IntegrationConfig) async throws {
+        try await save(config)
+    }
+
+    public func delete(connectorID: String) async throws {
+        try await context.perform {
+            let request = CDIntegrationConfig.fetchRequest()
+            request.predicate = NSPredicate(format: "connectorID == %@", connectorID)
+            request.fetchLimit = 1
+            if let cd = try self.context.fetch(request).first {
+                self.context.delete(cd)
+                try self.context.save()
+            }
+        }
+    }
+}
+
 // MARK: - RepositoryError
 
 public enum RepositoryError: LocalizedError {

@@ -9,8 +9,6 @@ import Foundation
 
 public actor SyncEngine {
 
-    public static let shared = SyncEngine()
-
     private let registry: IntegrationRegistry
     private let oauth: OAuthManager
     private let syncQueueRepo: SyncQueueRepository
@@ -19,9 +17,9 @@ public actor SyncEngine {
 
     public private(set) var isSyncing = false
 
-    public init(
-        registry: IntegrationRegistry = .shared,
-        oauth: OAuthManager = .shared,
+    public nonisolated init(
+        registry: IntegrationRegistry,
+        oauth: OAuthManager,
         syncQueueRepo: SyncQueueRepository,
         noteRepo: NoteRepository,
         reminderRepo: ReminderRepository
@@ -31,10 +29,6 @@ public actor SyncEngine {
         self.syncQueueRepo = syncQueueRepo
         self.noteRepo = noteRepo
         self.reminderRepo = reminderRepo
-    }
-
-    private init() {
-        fatalError("Use SyncEngine(syncQueueRepo:noteRepo:reminderRepo:) para injeção de dependências.")
     }
 
     // MARK: - Processamento da fila

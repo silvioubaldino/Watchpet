@@ -201,3 +201,35 @@ public class CDSyncQueueItem: NSManagedObject {
         NSFetchRequest<CDSyncQueueItem>(entityName: "CDSyncQueueItem")
     }
 }
+
+// MARK: - CDIntegrationConfig
+
+@objc(CDIntegrationConfig)
+public class CDIntegrationConfig: NSManagedObject {
+    @NSManaged public var id: UUID?
+    @NSManaged public var connectorID: String?
+    @NSManaged public var serviceName: String?
+    @NSManaged public var isEnabled: Bool
+    @NSManaged public var lastSyncedAt: Date?
+    @NSManaged public var scopesData: Data?
+
+    public var scopes: [String] {
+        get { (try? JSONDecoder().decode([String].self, from: scopesData ?? Data())) ?? [] }
+        set { scopesData = try? JSONEncoder().encode(newValue) }
+    }
+
+    public func toDomain() -> IntegrationConfig {
+        IntegrationConfig(
+            id: id ?? UUID(),
+            connectorID: connectorID ?? "",
+            serviceName: serviceName ?? "",
+            isEnabled: isEnabled,
+            scopes: scopes,
+            lastSyncedAt: lastSyncedAt
+        )
+    }
+
+    public static func fetchRequest() -> NSFetchRequest<CDIntegrationConfig> {
+        NSFetchRequest<CDIntegrationConfig>(entityName: "CDIntegrationConfig")
+    }
+}

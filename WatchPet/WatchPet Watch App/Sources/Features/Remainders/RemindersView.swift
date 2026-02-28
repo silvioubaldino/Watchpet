@@ -4,6 +4,7 @@ import WatchPetShared
 // (AyD v2.0, Seção 3.1 — Módulo ⏰ Lembretes Inteligentes)
 
 import SwiftUI
+import Combine
 
 // MARK: - RemindersViewModel
 
@@ -19,7 +20,7 @@ public final class RemindersViewModel: ObservableObject {
     private let snoozeUC: SnoozeReminderUseCase
     private let createUC: CreateReminderUseCase
 
-    public init(container: WatchAppContainerV1) {
+    public init(container: WatchAppContainer) {
         self.fetchUC = container.fetchReminders
         self.cancelUC = container.cancelReminder
         self.snoozeUC = container.snoozeReminder
@@ -51,7 +52,9 @@ public final class RemindersViewModel: ObservableObject {
             reminders.removeAll { $0.id == id }
             reminders.append(newReminder)
             reminders.sort { $0.triggerDate < $1.triggerDate }
+            #if os(watchOS)
             WKInterfaceDevice.current().play(.success)
+            #endif
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -65,7 +68,9 @@ public final class RemindersViewModel: ObservableObject {
             ))
             reminders.append(reminder)
             reminders.sort { $0.triggerDate < $1.triggerDate }
+            #if os(watchOS)
             WKInterfaceDevice.current().play(.success)
+            #endif
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -79,7 +84,7 @@ public struct RemindersView: View {
     @StateObject private var viewModel: RemindersViewModel
     @State private var showQuickAdd = false
 
-    public init(container: WatchAppContainerV1) {
+    public init(container: WatchAppContainer) {
         _viewModel = StateObject(wrappedValue: RemindersViewModel(container: container))
     }
 
@@ -132,7 +137,9 @@ public struct RemindersView: View {
                 )
             }
         }
+        #if os(watchOS)
         .listStyle(.carousel)
+        #endif
     }
 }
 

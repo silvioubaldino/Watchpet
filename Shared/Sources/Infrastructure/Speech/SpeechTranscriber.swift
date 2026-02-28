@@ -4,9 +4,12 @@
 // Roda APENAS no Apple Watch target.
 
 import Foundation
-import Speech
 import AVFoundation
 import Combine
+
+#if canImport(Speech)
+import Speech
+#endif
 
 // MARK: - TranscriptionState
 
@@ -31,9 +34,12 @@ public final class SpeechTranscriber: NSObject, ObservableObject {
     private let silenceThreshold: TimeInterval = 1.2  // segundos — encerra segmento
     private let maxDuration: TimeInterval = 30.0       // timeout de segurança
 
+    #if canImport(Speech)
     private var speechRecognizer: SFSpeechRecognizer?
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     private var recognitionTask: SFSpeechRecognitionTask?
+    #endif
+
     private let audioEngine = AVAudioEngine()
 
     private var silenceTimer: Timer?
@@ -45,25 +51,31 @@ public final class SpeechTranscriber: NSObject, ObservableObject {
     public init(locale: Locale = Locale(identifier: "pt-BR")) {
         self.locale = locale
         super.init()
+        #if canImport(Speech)
         configureSpeechRecognizer()
+        #endif
     }
 
     // MARK: - Setup
-
+    
+    #if canImport(Speech)
     private func configureSpeechRecognizer() {
         speechRecognizer = SFSpeechRecognizer(locale: locale)
         speechRecognizer?.defaultTaskHint = .dictation
     }
+    #endif
 
     // MARK: - Permissões
 
     public func requestPermissions() async -> Bool {
+        #if canImport(Speech)
         let speechStatus = await withCheckedContinuation { continuation in
             SFSpeechRecognizer.requestAuthorization { status in
                 continuation.resume(returning: status)
             }
         }
         guard speechStatus == .authorized else { return false }
+        #endif
 
         // Permissão de microfone (iOS/watchOS)
         let micStatus = await AVAudioApplication.requestRecordPermission()
@@ -71,7 +83,15 @@ public final class SpeechTranscriber: NSObject, ObservableObject {
     }
 
     public var isAvailable: Bool {
-        speechRecognizer?.isAvailable == true
+        #if canImport(Speech)
+        #if targetEnvironment(simulator)
+        return true // Simuladores freq. reportam false em isAvailable de forma incorreta
+        #else
+        return speechRecognizer?.isAvailable == true
+        #endif
+        #else
+        return false
+        #endif
     }
 
     // MARK: - Ciclo de vida
@@ -102,7 +122,12 @@ public final class SpeechTranscriber: NSObject, ObservableObject {
 
     private func beginAudioSession() throws {
         let session = AVAudioSession.sharedInstance()
+        #if targetEnvironment(simulator)
+        // No watchOS, usamos apenas .playAndRecord sem as opções de iOS (.defaultToSpeaker)
+        try session.setCategory(.playAndRecord, mode: .default, options: [])
+        #else
         try session.setCategory(.record, mode: .measurement, options: .duckOthers)
+        #endif
         try session.setActive(true, options: .notifyOthersOnDeactivation)
     }
 
@@ -113,6 +138,7 @@ public final class SpeechTranscriber: NSObject, ObservableObject {
     // MARK: - Reconhecimento
 
     private func startRecognition() throws {
+        #if canImport(Speech)
         guard let recognizer = speechRecognizer else { throw NSError(domain: "SpeechTranscriber", code: 1) }
 
         recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
@@ -120,7 +146,12 @@ public final class SpeechTranscriber: NSObject, ObservableObject {
 
         request.shouldReportPartialResults = true
         // Força modo offline para privacidade
+        // No simulador, manter `requiresOnDeviceRecognition = true` costuma causar falhas (offline dictation not supported)
+        #if targetEnvironment(simulator)
+        request.requiresOnDeviceRecognition = false
+        #else
         request.requiresOnDeviceRecognition = true
+        #endif
 
         recognitionTask = recognizer.recognitionTask(with: request) { [weak self] result, error in
             Task { @MainActor [weak self] in
@@ -129,7 +160,12 @@ public final class SpeechTranscriber: NSObject, ObservableObject {
         }
 
         let inputNode = audioEngine.inputNode
-        let format = inputNode.outputFormat(forBus: 0)
+        var format = inputNode.outputFormat(forBus: 0)
+        
+        // Contorno para bug clássico de áudio do Simulador (0Hz sample rate / -10851)
+        if format.sampleRate == 0 {
+            format = AVAudioFormat(standardFormatWithSampleRate: 44100, channels: 1) ?? format
+        }
 
         inputNode.installTap(onBus: 0, bufferSize: 1024, format: format) { [weak self] buffer, _ in
             self?.recognitionRequest?.append(buffer)
@@ -137,8 +173,12 @@ public final class SpeechTranscriber: NSObject, ObservableObject {
 
         audioEngine.prepare()
         try audioEngine.start()
+        #else
+        throw NSError(domain: "SpeechTranscriber", code: 3, userInfo: [NSLocalizedDescriptionKey: "Reconhecimento não suportado"])
+        #endif
     }
-
+    
+    #if canImport(Speech)
     private func handleRecognitionResult(result: SFSpeechRecognitionResult?, error: Error?) {
         if let result {
             let transcript = result.bestTranscription.formattedString
@@ -159,6 +199,7 @@ public final class SpeechTranscriber: NSObject, ObservableObject {
             cleanUp()
         }
     }
+    #endif
 
     // MARK: - Timers
 
@@ -206,12 +247,16 @@ public final class SpeechTranscriber: NSObject, ObservableObject {
     private func cleanUp() {
         silenceTimer?.invalidate()
         maxDurationTimer?.invalidate()
-        audioEngine.stop()
+        if audioEngine.isRunning {
+            audioEngine.stop()
+        }
         audioEngine.inputNode.removeTap(onBus: 0)
+        #if canImport(Speech)
         recognitionRequest?.endAudio()
         recognitionRequest = nil
         recognitionTask?.cancel()
         recognitionTask = nil
+        #endif
         endAudioSession()
     }
 

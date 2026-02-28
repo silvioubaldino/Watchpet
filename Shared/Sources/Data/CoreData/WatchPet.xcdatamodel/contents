@@ -6,7 +6,7 @@
 -->
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0"
        lastSavedToolsVersion="21754" systemVersion="22G74" minimumToolsVersion="Automatic"
-       sourceLanguage="Swift" usedWithSwiftData="NO" userDefinedModelVersionIdentifier="">
+       usedWithSwiftData="NO" userDefinedModelVersionIdentifier="">
 
     <!-- CDNote -->
     <entity name="CDNote" representedClassName="CDNote" syncable="YES">
@@ -46,10 +46,10 @@
     <entity name="CDHabitLog" representedClassName="CDHabitLog" syncable="YES">
         <attribute name="id"                optional="NO"  attributeType="UUID"    usesScalarValueType="NO"/>
         <attribute name="date"              optional="YES" attributeType="Date"    usesScalarValueType="NO"/>
-        <attribute name="hydrationCheckins" optional="NO"  attributeType="Integer32" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="postureBreaks"     optional="NO"  attributeType="Integer32" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="pomodoroCount"     optional="NO"  attributeType="Integer32" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="notesCreated"      optional="NO"  attributeType="Integer32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="hydrationCheckins" optional="NO"  attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="postureBreaks"     optional="NO"  attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="pomodoroCount"     optional="NO"  attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="notesCreated"      optional="NO"  attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
 
     <!-- CDConversation -->
@@ -70,9 +70,19 @@
         <attribute name="operationRaw"  optional="YES" attributeType="String"/>
         <attribute name="connectorID"   optional="YES" attributeType="String"/>
         <attribute name="statusRaw"     optional="YES" attributeType="String"/>
-        <attribute name="retryCount"    optional="NO"  attributeType="Integer32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="retryCount"    optional="NO"  attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="nextRetryAt"   optional="YES" attributeType="Date"     usesScalarValueType="NO"/>
         <attribute name="createdAt"     optional="YES" attributeType="Date"     usesScalarValueType="NO"/>
+    </entity>
+    
+    <!-- CDIntegrationConfig -->
+    <entity name="CDIntegrationConfig" representedClassName="CDIntegrationConfig" syncable="YES">
+        <attribute name="id"            optional="NO"  attributeType="UUID"     usesScalarValueType="NO"/>
+        <attribute name="connectorID"   optional="YES" attributeType="String"/>
+        <attribute name="serviceName"   optional="YES" attributeType="String"/>
+        <attribute name="isEnabled"     optional="NO"  attributeType="Boolean"  defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="lastSyncedAt"  optional="YES" attributeType="Date"     usesScalarValueType="NO"/>
+        <attribute name="scopesData"    optional="YES" attributeType="Binary"/>
     </entity>
 
     <elements>

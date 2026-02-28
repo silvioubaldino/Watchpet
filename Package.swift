@@ -21,6 +21,9 @@ let package = Package(
         .target(
             name: "WatchPetShared",
             path: "Shared/Sources",
+            resources: [
+                .process("Data/CoreData/WatchPet.xcdatamodel")
+            ],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency")
             ]

@@ -6,7 +6,9 @@ import WatchPetShared
 import Foundation
 import AVFoundation
 import Combine
+#if os(watchOS)
 import WatchKit
+#endif
 
 @MainActor
 public final class VoiceInteractionViewModel: ObservableObject {
@@ -51,7 +53,6 @@ public final class VoiceInteractionViewModel: ObservableObject {
     // MARK: - Init
 
     public init(container: WatchAppContainer, petStateManager: PetStateManager? = nil) {
-        // In preview we might not have petStateManager yet
         self.transcriber = container.speechTranscriber
         self.classifier = container.intentClassifier
         self.petStateManager = petStateManager
@@ -172,9 +173,11 @@ public final class VoiceInteractionViewModel: ObservableObject {
         speak(response.text)
 
         // Haptic
+        #if os(watchOS)
         if response.shouldVibrate {
             WKInterfaceDevice.current().play(.success)
         }
+        #endif
 
         // Volta ao idle após resposta
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
@@ -268,7 +271,9 @@ public final class VoiceInteractionViewModel: ObservableObject {
 
             await MainActor.run {
                 self.activeTimer = nil
+                #if os(watchOS)
                 WKInterfaceDevice.current().play(.notification)
+                #endif
                 let finishResponse = PetResponse(
                     text: "Tempo esgotado! \(timer.label.map { "Timer '\($0)' " } ?? "")Ótimo trabalho! 🎉",
                     emotion: .excited,

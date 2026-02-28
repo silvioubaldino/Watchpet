@@ -17,7 +17,8 @@ public final class WatchAppContainer: ObservableObject {
     public let persistence: PersistenceController
 
     // MARK: Domain Managers
-    public let petStateManager: PetStateManager
+    // MARK: Domain Managers
+    // (PetStateManager instanciado e gerenciado diretamente na app WatchOS)
 
     // MARK: Repositories (injetados via protocolo)
     public let noteRepository: NoteRepository
@@ -103,10 +104,6 @@ public final class WatchAppContainer: ObservableObject {
             noteRepository: noteRepo
         )
         self.saveConversation = SaveConversationUseCase(repository: conversationRepo)
-
-        // Pet
-        self.petStateManager = PetStateManager()
-        self.petStateManager.configure(profile: profileRepo.load())
     }
 }
 
@@ -147,7 +144,11 @@ public final class iOSAppContainer: ObservableObject {
 
         self.integrationRegistry = .shared
         self.oauthManager = .shared
+        
+        // SyncEngine is an actor. Nonisolated initialization:
         self.syncEngine = SyncEngine(
+            registry: self.integrationRegistry,
+            oauth: self.oauthManager,
             syncQueueRepo: syncQueueRepo,
             noteRepo: noteRepo,
             reminderRepo: reminderRepo

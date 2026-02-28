@@ -4,6 +4,7 @@ import WatchPetShared
 // (AyD v2.0, Seção 3.1 — Módulo ⏱ Timer & Cronômetro)
 
 import SwiftUI
+import Combine
 
 // MARK: - TimersViewModel
 
@@ -22,7 +23,7 @@ public final class TimersViewModel: ObservableObject {
 
     private var countdownTask: Task<Void, Never>?
 
-    public init(container: WatchAppContainerV1) {
+    public init(container: WatchAppContainer) {
         self.createUC = container.createTimer
         self.completeUC = container.completeTimer
         self.timerRepo = container.timerRepository
@@ -46,7 +47,9 @@ public final class TimersViewModel: ObservableObject {
             remaining = duration
             isRunning = true
             startCountdown()
+            #if os(watchOS)
             WKInterfaceDevice.current().play(.start)
+            #endif
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -60,7 +63,9 @@ public final class TimersViewModel: ObservableObject {
         isRunning = false
         elapsed = 0
         remaining = 0
+        #if os(watchOS)
         WKInterfaceDevice.current().play(.stop)
+        #endif
     }
 
     private func startCountdown() {
@@ -74,7 +79,9 @@ public final class TimersViewModel: ObservableObject {
                     self.remaining = timer.remaining
                     if self.remaining <= 0 {
                         self.isRunning = false
+                        #if os(watchOS)
                         WKInterfaceDevice.current().play(.notification)
+                        #endif
                     }
                 }
                 if remaining <= 0 { break }
@@ -89,7 +96,7 @@ public struct TimersView: View {
 
     @StateObject private var viewModel: TimersViewModel
 
-    public init(container: WatchAppContainerV1) {
+    public init(container: WatchAppContainer) {
         _viewModel = StateObject(wrappedValue: TimersViewModel(container: container))
     }
 
@@ -150,7 +157,9 @@ public struct TimersView: View {
                 }
             }
         }
+        #if os(watchOS)
         .listStyle(.carousel)
+        #endif
     }
 }
 

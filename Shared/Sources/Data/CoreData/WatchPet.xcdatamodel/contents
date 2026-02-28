@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- MARK: - WatchPet CoreData Model
+     Arquivo: WatchPet.xcdatamodeld/WatchPet.xcdatamodel/contents
+     Criar no Xcode: File → New → File → Data Model → WatchPet
+     Ou adicionar as entidades manualmente via editor visual.
+-->
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0"
+       lastSavedToolsVersion="21754" systemVersion="22G74" minimumToolsVersion="Automatic"
+       sourceLanguage="Swift" usedWithSwiftData="NO" userDefinedModelVersionIdentifier="">
+
+    <!-- CDNote -->
+    <entity name="CDNote" representedClassName="CDNote" syncable="YES">
+        <attribute name="id"              optional="NO"  attributeType="UUID"     usesScalarValueType="NO"/>
+        <attribute name="rawText"         optional="YES" attributeType="String"/>
+        <attribute name="category"        optional="YES" attributeType="String"/>
+        <attribute name="tagsData"        optional="YES" attributeType="Binary"/>
+        <attribute name="externalIDsData" optional="YES" attributeType="Binary"/>
+        <attribute name="isSynced"        optional="NO"  attributeType="Boolean"  defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="createdAt"       optional="YES" attributeType="Date"     usesScalarValueType="NO"/>
+        <attribute name="updatedAt"       optional="YES" attributeType="Date"     usesScalarValueType="NO"/>
+    </entity>
+
+    <!-- CDReminder -->
+    <entity name="CDReminder" representedClassName="CDReminder" syncable="YES">
+        <attribute name="id"              optional="NO"  attributeType="UUID"    usesScalarValueType="NO"/>
+        <attribute name="title"           optional="YES" attributeType="String"/>
+        <attribute name="triggerDate"     optional="YES" attributeType="Date"    usesScalarValueType="NO"/>
+        <attribute name="repeatInterval"  optional="NO"  attributeType="Double"  defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="isProactive"     optional="NO"  attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="completedAt"     optional="YES" attributeType="Date"    usesScalarValueType="NO"/>
+        <attribute name="linkedEntityID"  optional="YES" attributeType="UUID"    usesScalarValueType="NO"/>
+        <attribute name="externalIDsData" optional="YES" attributeType="Binary"/>
+    </entity>
+
+    <!-- CDTimerRecord -->
+    <entity name="CDTimerRecord" representedClassName="CDTimerRecord" syncable="YES">
+        <attribute name="id"          optional="NO"  attributeType="UUID"   usesScalarValueType="NO"/>
+        <attribute name="startedAt"   optional="YES" attributeType="Date"   usesScalarValueType="NO"/>
+        <attribute name="duration"    optional="NO"  attributeType="Double" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="label"       optional="YES" attributeType="String"/>
+        <attribute name="completedAt" optional="YES" attributeType="Date"   usesScalarValueType="NO"/>
+        <attribute name="typeRaw"     optional="YES" attributeType="String"/>
+    </entity>
+
+    <!-- CDHabitLog -->
+    <entity name="CDHabitLog" representedClassName="CDHabitLog" syncable="YES">
+        <attribute name="id"                optional="NO"  attributeType="UUID"    usesScalarValueType="NO"/>
+        <attribute name="date"              optional="YES" attributeType="Date"    usesScalarValueType="NO"/>
+        <attribute name="hydrationCheckins" optional="NO"  attributeType="Integer32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="postureBreaks"     optional="NO"  attributeType="Integer32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="pomodoroCount"     optional="NO"  attributeType="Integer32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="notesCreated"      optional="NO"  attributeType="Integer32" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
+
+    <!-- CDConversation -->
+    <entity name="CDConversation" representedClassName="CDConversation" syncable="YES">
+        <attribute name="id"            optional="NO"  attributeType="UUID"   usesScalarValueType="NO"/>
+        <attribute name="timestamp"     optional="YES" attributeType="Date"   usesScalarValueType="NO"/>
+        <attribute name="transcript"    optional="YES" attributeType="String"/>
+        <attribute name="llmResponse"   optional="YES" attributeType="String"/>
+        <attribute name="intentTypeRaw" optional="YES" attributeType="String"/>
+        <attribute name="petEmotionRaw" optional="YES" attributeType="String"/>
+    </entity>
+
+    <!-- CDSyncQueueItem -->
+    <entity name="CDSyncQueueItem" representedClassName="CDSyncQueueItem" syncable="YES">
+        <attribute name="id"            optional="NO"  attributeType="UUID"     usesScalarValueType="NO"/>
+        <attribute name="entityTypeRaw" optional="YES" attributeType="String"/>
+        <attribute name="entityID"      optional="YES" attributeType="UUID"     usesScalarValueType="NO"/>
+        <attribute name="operationRaw"  optional="YES" attributeType="String"/>
+        <attribute name="connectorID"   optional="YES" attributeType="String"/>
+        <attribute name="statusRaw"     optional="YES" attributeType="String"/>
+        <attribute name="retryCount"    optional="NO"  attributeType="Integer32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="nextRetryAt"   optional="YES" attributeType="Date"     usesScalarValueType="NO"/>
+        <attribute name="createdAt"     optional="YES" attributeType="Date"     usesScalarValueType="NO"/>
+    </entity>
+
+    <elements>
+        <element name="CDNote"          positionX="-63"  positionY="-18"  width="128" height="193"/>
+        <element name="CDReminder"      positionX="180"  positionY="-18"  width="128" height="193"/>
+        <element name="CDTimerRecord"   positionX="-63"  positionY="225"  width="128" height="148"/>
+        <element name="CDHabitLog"      positionX="180"  positionY="225"  width="128" height="148"/>
+        <element name="CDConversation"  positionX="-63"  positionY="430"  width="128" height="148"/>
+        <element name="CDSyncQueueItem" positionX="180"  positionY="430"  width="128" height="193"/>
+    </elements>
+</model>

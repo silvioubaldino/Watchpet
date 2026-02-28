@@ -7,7 +7,7 @@ import SwiftUI
 @main
 struct WatchPetApp: App {
 
-    @StateObject private var container = WatchAppContainer.preview // Substituir por produção
+    @StateObject private var container = WatchAppContainer()
     @StateObject private var connectivity = WatchConnectivityBridge.shared
 
     var body: some Scene {
@@ -21,71 +21,169 @@ struct WatchPetApp: App {
 
 // MARK: - MainWatchView
 
-/// Tela principal do Watch — combina avatar do pet com área de interação por voz.
 struct MainWatchView: View {
 
     @EnvironmentObject var container: WatchAppContainer
-    @EnvironmentObject var connectivity: WatchConnectivityBridge
+    @StateObject private var voiceVM: VoiceInteractionViewModel
+
+    init() {
+        // VoiceInteractionViewModel será configurado com o container real no onAppear
+        _voiceVM = StateObject(wrappedValue: VoiceInteractionViewModel(container: .preview))
+    }
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 8) {
-                // Avatar do pet
-                PetAvatarView(
-                    emotion: container.petStateManager.currentEmotion,
-                    petName: container.petStateManager.petName
-                )
-                .frame(height: 100)
+        TabView {
+            // Tab 1 — Tela principal: Pet + Voz
+            MainPetVoiceView(voiceVM: voiceVM)
+                .tag(0)
 
-                // Área de transcrição e status
-                TranscriptionStatusView(
-                    transcriber: container.speechTranscriber
-                )
+            // Tab 2 — Timers
+            TimersView(container: container)
+                .tag(1)
 
-                // Botão principal de ativação por voz
-                VoiceActivationButton(
-                    transcriber: container.speechTranscriber
-                )
+            // Tab 3 — Lembretes
+            RemindersView(container: container)
+                .tag(2)
+        }
+        .tabViewStyle(.page)
+        .onAppear {
+            // Sincroniza o VM com o container real injetado
+            voiceVM.updateContainer(container)
+            requestPermissions()
+        }
+    }
+
+    private func requestPermissions() {
+        Task {
+            let granted = await container.speechTranscriber.requestPermissions()
+            if !granted {
+                print("⚠️ Permissão de microfone/speech negada")
             }
-            .padding(.horizontal, 8)
-            .navigationTitle("")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    NavigationLink(destination: QuickActionsView()) {
-                        Image(systemName: "ellipsis.circle")
+        }
+    }
+}
+
+// MARK: - MainPetVoiceView
+
+struct MainPetVoiceView: View {
+
+    @EnvironmentObject var container: WatchAppContainer
+    @ObservedObject var voiceVM: VoiceInteractionViewModel
+
+    var body: some View {
+        VStack(spacing: 6) {
+
+            // Avatar do pet
+            PetAvatarView(
+                emotion: container.petStateManager.currentEmotion,
+                petName: container.petStateManager.petName
+            )
+            .frame(height: 90)
+
+            // Resposta do pet ou transcript parcial
+            responseArea
+
+            // Botão de voz
+            HStack(spacing: 10) {
+                voiceButton
+
+                if voiceVM.pendingRemindersCount > 0 {
+                    NavigationLink(destination: RemindersView(container: container)) {
+                        ZStack(alignment: .topTrailing) {
+                            Image(systemName: "bell.fill")
+                                .font(.caption)
+                                .foregroundStyle(.orange)
+                            Text("\(voiceVM.pendingRemindersCount)")
+                                .font(.system(size: 8).bold())
+                                .foregroundStyle(.white)
+                                .padding(2)
+                                .background(.red)
+                                .clipShape(Circle())
+                                .offset(x: 4, y: -4)
+                        }
                     }
+                    .buttonStyle(.plain)
                 }
             }
         }
-        .onAppear {
-            setupTranscriberCallback()
-        }
+        .padding(.horizontal, 8)
     }
 
-    private func setupTranscriberCallback() {
-        container.speechTranscriber.onTranscriptReady = { transcript in
-            Task { @MainActor in
-                handleTranscript(transcript)
+    private var responseArea: some View {
+        Group {
+            switch voiceVM.state {
+            case .idle:
+                Text("Toque para falar")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+
+            case .listening:
+                HStack(spacing: 4) {
+                    AudioWaveformView()
+                        .frame(width: 32, height: 14)
+                    Text(voiceVM.partialTranscript.isEmpty ? "Ouvindo..." : voiceVM.partialTranscript)
+                        .font(.caption2)
+                        .lineLimit(2)
+                }
+
+            case .processing:
+                HStack(spacing: 4) {
+                    ProgressView().scaleEffect(0.5)
+                    Text("Pensando...").font(.caption2).foregroundStyle(.secondary)
+                }
+
+            case .responding(let text):
+                Text(text)
+                    .font(.caption2)
+                    .lineLimit(3)
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(.primary)
+                    .transition(.opacity)
+
+            case .error(let msg):
+                Text(msg)
+                    .font(.caption2)
+                    .foregroundStyle(.red)
+                    .lineLimit(2)
             }
         }
+        .frame(height: 38)
+        .animation(.easeInOut(duration: 0.2), value: voiceVM.state)
     }
 
-    @MainActor
-    private func handleTranscript(_ transcript: String) {
-        container.petStateManager.onProcessingStarted()
+    private var voiceButton: some View {
+        Button {
+            switch voiceVM.state {
+            case .idle:        voiceVM.startListening()
+            case .listening:   voiceVM.stopListening()
+            default:           voiceVM.resetToIdle()
+            }
+        } label: {
+            ZStack {
+                Circle()
+                    .fill(buttonColor)
+                    .frame(width: 48, height: 48)
+                Image(systemName: buttonIcon)
+                    .font(.title3)
+                    .foregroundStyle(.white)
+            }
+        }
+        .buttonStyle(.plain)
+    }
 
-        let intent = container.intentClassifier.classify(transcript)
-        let response = container.petStateManager.respond(to: intent, transcript: transcript)
+    private var buttonColor: Color {
+        switch voiceVM.state {
+        case .listening:  return .red
+        case .processing: return .orange
+        default:          return .blue
+        }
+    }
 
-        // TODO (Fase 1): executar UseCase correspondente ao intent
-        // Ex: CreateReminderUseCase, CreateTimerUseCase, SaveNoteUseCase
-
-        print("🐾 Intent: \(intent.type) | Resposta: \(response.text)")
-        container.petStateManager.onProcessingCompleted()
-
-        // Feedback háptico
-        if response.shouldVibrate {
-            WKInterfaceDevice.current().play(.success)
+    private var buttonIcon: String {
+        switch voiceVM.state {
+        case .listening:  return "stop.fill"
+        case .processing: return "ellipsis"
+        default:          return "mic.fill"
         }
     }
 }
@@ -172,60 +270,8 @@ struct PetAvatarView: View {
     }
 }
 
-// MARK: - TranscriptionStatusView
-
-struct TranscriptionStatusView: View {
-
-    @ObservedObject var transcriber: SpeechTranscriber
-
-    var body: some View {
-        Group {
-            switch transcriber.state {
-            case .idle:
-                Text("Levante o pulso ou toque para falar")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-
-            case .listening:
-                HStack(spacing: 4) {
-                    AudioWaveformView()
-                        .frame(width: 32, height: 16)
-                    Text(transcriber.partialTranscript.isEmpty ? "Ouvindo..." : transcriber.partialTranscript)
-                        .font(.caption2)
-                        .lineLimit(2)
-                }
-
-            case .processing:
-                HStack(spacing: 4) {
-                    ProgressView()
-                        .scaleEffect(0.6)
-                    Text("Processando...")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                }
-
-            case .result(let text):
-                Text(text)
-                    .font(.caption2)
-                    .lineLimit(3)
-                    .foregroundStyle(.primary)
-
-            case .error(let message):
-                Text(message)
-                    .font(.caption2)
-                    .foregroundStyle(.red)
-                    .lineLimit(2)
-            }
-        }
-        .frame(height: 36)
-        .padding(.horizontal, 4)
-    }
-}
-
 // MARK: - AudioWaveformView
 
-/// Animação simples de forma de onda de áudio enquanto escuta.
 struct AudioWaveformView: View {
 
     @State private var animating = false
@@ -250,89 +296,10 @@ struct AudioWaveformView: View {
     }
 }
 
-// MARK: - VoiceActivationButton
-
-struct VoiceActivationButton: View {
-
-    @ObservedObject var transcriber: SpeechTranscriber
-
-    var body: some View {
-        Button {
-            switch transcriber.state {
-            case .idle:
-                transcriber.startListening()
-            case .listening:
-                transcriber.stopListening()
-            default:
-                transcriber.resetToIdle()
-            }
-        } label: {
-            ZStack {
-                Circle()
-                    .fill(buttonColor)
-                    .frame(width: 52, height: 52)
-
-                Image(systemName: buttonIcon)
-                    .font(.title3)
-                    .foregroundStyle(.white)
-            }
-        }
-        .buttonStyle(.plain)
-    }
-
-    private var buttonColor: Color {
-        switch transcriber.state {
-        case .listening: return .red
-        case .processing: return .orange
-        default: return .blue
-        }
-    }
-
-    private var buttonIcon: String {
-        switch transcriber.state {
-        case .listening: return "stop.fill"
-        case .processing: return "ellipsis"
-        default: return "mic.fill"
-        }
-    }
-}
-
-// MARK: - QuickActionsView
-
-struct QuickActionsView: View {
-    var body: some View {
-        List {
-            NavigationLink("⏱ Timers") {
-                Text("Timer View — Fase 1")
-            }
-            NavigationLink("⏰ Lembretes") {
-                Text("Reminders View — Fase 1")
-            }
-            NavigationLink("📝 Notas") {
-                Text("Notes View — Fase 2")
-            }
-            NavigationLink("📊 Hábitos") {
-                Text("Habits View — Fase 3")
-            }
-        }
-        .navigationTitle("Ações")
-    }
-}
-
 // MARK: - Previews
 
-#Preview("Main Watch View") {
+#Preview("Main Watch") {
     MainWatchView()
         .environmentObject(WatchAppContainer.preview)
         .environmentObject(WatchConnectivityBridge.shared)
-}
-
-#Preview("Pet Avatars") {
-    ScrollView {
-        VStack(spacing: 16) {
-            ForEach(PetEmotion.allCases, id: \.self) { emotion in
-                PetAvatarView(emotion: emotion, petName: emotion.rawValue)
-            }
-        }
-    }
 }

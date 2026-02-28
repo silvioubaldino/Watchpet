@@ -7,12 +7,7 @@ import SwiftUI
 @main
 struct WatchPetiOSApp: App {
 
-    @StateObject private var container = iOSAppContainer(
-        noteRepository: MockNoteRepository(),
-        reminderRepository: MockReminderRepository(),
-        syncQueueRepository: MockSyncQueueRepository(),
-        integrationConfigRepository: MockIntegrationConfigRepository()
-    )
+    @StateObject private var container = iOSAppContainer()
     @StateObject private var connectivity = WatchConnectivityBridge.shared
 
     var body: some Scene {
@@ -112,7 +107,7 @@ struct DashboardView: View {
     }
 }
 
-// MARK: - IntegrationsView (Fase 4 placeholder)
+// MARK: - IntegrationsView
 
 struct IntegrationsView: View {
 
@@ -221,7 +216,7 @@ struct SettingsView: View {
                         .foregroundStyle(.green)
                 }
                 Section("Sobre") {
-                    LabeledContent("Versão", value: "0.1.0 (Fase 0)")
+                    LabeledContent("Versão", value: "0.1.0")
                     LabeledContent("AyD", value: "v2.0")
                 }
             }
@@ -230,26 +225,10 @@ struct SettingsView: View {
     }
 }
 
-// MARK: - Mock para iOS
-
-final class MockIntegrationConfigRepository: IntegrationConfigRepository {
-    var configs: [IntegrationConfig] = []
-    func fetchAll() async throws -> [IntegrationConfig] { configs }
-    func fetch(connectorID: String) async throws -> IntegrationConfig? { configs.first { $0.connectorID == connectorID } }
-    func save(_ config: IntegrationConfig) async throws { configs.append(config) }
-    func update(_ config: IntegrationConfig) async throws { configs = configs.map { $0.connectorID == config.connectorID ? config : $0 } }
-    func delete(connectorID: String) async throws { configs.removeAll { $0.connectorID == connectorID } }
-}
-
 // MARK: - Previews
 
 #Preview("iOS Root") {
     iOSRootView()
-        .environmentObject(iOSAppContainer(
-            noteRepository: MockNoteRepository(),
-            reminderRepository: MockReminderRepository(),
-            syncQueueRepository: MockSyncQueueRepository(),
-            integrationConfigRepository: MockIntegrationConfigRepository()
-        ))
+        .environmentObject(iOSAppContainer.preview)
         .environmentObject(WatchConnectivityBridge.shared)
 }

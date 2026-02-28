@@ -1,24 +1,25 @@
 // MARK: - AppContainer
 // Container de injeção de dependências (DI).
-// Instancia e injeta todos os serviços e repositórios do app.
-// Padrão: Service Locator simples — pode evoluir para Resolver/Swinject se necessário.
+// Instancia e injeta todos os serviços, repositórios e casos de uso do app.
 
 import Foundation
+import CoreData
 
-// MARK: - AppContainer (Watch)
+// MARK: - WatchAppContainer
 
 /// Container principal do Apple Watch target.
 @MainActor
 public final class WatchAppContainer: ObservableObject {
 
-    // MARK: - Infrastructure
+    // MARK: Infrastructure
     public let speechTranscriber: SpeechTranscriber
     public let intentClassifier: IntentClassifierProtocol
+    public let persistence: PersistenceController
 
-    // MARK: - Domain Managers
+    // MARK: Domain Managers
     public let petStateManager: PetStateManager
 
-    // MARK: - Repositories (injetados via protocolo — mock em testes)
+    // MARK: Repositories (injetados via protocolo)
     public let noteRepository: NoteRepository
     public let reminderRepository: ReminderRepository
     public let timerRepository: TimerRepository
@@ -27,193 +28,143 @@ public final class WatchAppContainer: ObservableObject {
     public let conversationRepository: ConversationRepository
     public let syncQueueRepository: SyncQueueRepository
 
-    public init(
-        noteRepository: NoteRepository,
-        reminderRepository: ReminderRepository,
-        timerRepository: TimerRepository,
-        userProfileRepository: UserProfileRepository,
-        habitLogRepository: HabitLogRepository,
-        conversationRepository: ConversationRepository,
-        syncQueueRepository: SyncQueueRepository,
-        locale: Locale = Locale(identifier: "pt-BR")
-    ) {
-        self.noteRepository = noteRepository
-        self.reminderRepository = reminderRepository
-        self.timerRepository = timerRepository
-        self.userProfileRepository = userProfileRepository
-        self.habitLogRepository = habitLogRepository
-        self.conversationRepository = conversationRepository
-        self.syncQueueRepository = syncQueueRepository
+    // MARK: UseCases — Reminder
+    public let createReminder: CreateReminderUseCase
+    public let cancelReminder: CancelReminderUseCase
+    public let snoozeReminder: SnoozeReminderUseCase
+    public let fetchReminders: FetchRemindersUseCase
 
+    // MARK: UseCases — Timer
+    public let createTimer: CreateTimerUseCase
+    public let completeTimer: CompleteTimerUseCase
+
+    // MARK: UseCases — Note
+    public let saveNote: SaveNoteUseCase
+
+    // MARK: UseCases — Habit
+    public let logHabit: LogHabitUseCase
+    public let getDailySummary: GetDailySummaryUseCase
+
+    // MARK: UseCases — Conversation
+    public let saveConversation: SaveConversationUseCase
+
+    // MARK: - Initialization
+
+    /// Inicializador para produção ou pré-visualização.
+    /// - Parameters:
+    ///   - inMemory: Se verdadeiro, usa o banco de dados em memória (para testes/previews).
+    ///   - locale: Localidade para reconhecimento de voz.
+    public init(inMemory: Bool = false, locale: Locale = Locale(identifier: "pt-BR")) {
+        // Persistence
+        let persistence = PersistenceController(inMemory: inMemory)
+        self.persistence = persistence
+        let context = persistence.viewContext
+
+        // Repositories
+        let noteRepo = CoreDataNoteRepository(context: context)
+        let reminderRepo = CoreDataReminderRepository(context: context)
+        let timerRepo = CoreDataTimerRepository(context: context)
+        let habitRepo = CoreDataHabitLogRepository(context: context)
+        let conversationRepo = CoreDataConversationRepository(context: context)
+        let syncQueueRepo = CoreDataSyncQueueRepository(context: context)
+        let profileRepo = UserDefaultsProfileRepository()
+
+        self.noteRepository = noteRepo
+        self.reminderRepository = reminderRepo
+        self.timerRepository = timerRepo
+        self.userProfileRepository = profileRepo
+        self.habitLogRepository = habitRepo
+        self.conversationRepository = conversationRepo
+        self.syncQueueRepository = syncQueueRepo
+
+        // Infrastructure
         self.speechTranscriber = SpeechTranscriber(locale: locale)
         self.intentClassifier = RuleBasedIntentClassifier()
-        self.petStateManager = PetStateManager()
 
-        // Carrega perfil do usuário e configura o pet
-        let profile = userProfileRepository.load()
-        petStateManager.configure(profile: profile)
+        // UseCases
+        let createReminderUC = CreateReminderUseCase(repository: reminderRepo)
+        self.createReminder = createReminderUC
+        self.cancelReminder = CancelReminderUseCase(repository: reminderRepo)
+        self.snoozeReminder = SnoozeReminderUseCase(repository: reminderRepo, createReminder: createReminderUC)
+        self.fetchReminders = FetchRemindersUseCase(repository: reminderRepo)
+        self.createTimer = CreateTimerUseCase(repository: timerRepo, habitRepository: habitRepo)
+        self.completeTimer = CompleteTimerUseCase(timerRepository: timerRepo, habitRepository: habitRepo)
+        self.saveNote = SaveNoteUseCase(
+            noteRepository: noteRepo,
+            habitRepository: habitRepo,
+            syncQueueRepository: syncQueueRepo
+        )
+        self.logHabit = LogHabitUseCase(habitRepository: habitRepo, reminderRepository: reminderRepo)
+        self.getDailySummary = GetDailySummaryUseCase(
+            habitRepository: habitRepo,
+            reminderRepository: reminderRepo,
+            noteRepository: noteRepo
+        )
+        self.saveConversation = SaveConversationUseCase(repository: conversationRepo)
+
+        // Pet
+        self.petStateManager = PetStateManager()
+        self.petStateManager.configure(profile: profileRepo.load())
     }
 }
 
-// MARK: - AppContainer (iPhone)
+// MARK: - iOSAppContainer
 
 /// Container principal do iPhone companion app.
 @MainActor
 public final class iOSAppContainer: ObservableObject {
 
-    // MARK: - Integration
+    // MARK: Integration
     public let integrationRegistry: IntegrationRegistry
     public let oauthManager: OAuthManager
     public let syncEngine: SyncEngine
 
-    // MARK: - Repositories
+    // MARK: Persistence
+    public let persistence: PersistenceController
+
+    // MARK: Repositories
     public let noteRepository: NoteRepository
     public let reminderRepository: ReminderRepository
     public let syncQueueRepository: SyncQueueRepository
     public let integrationConfigRepository: IntegrationConfigRepository
 
-    public init(
-        noteRepository: NoteRepository,
-        reminderRepository: ReminderRepository,
-        syncQueueRepository: SyncQueueRepository,
-        integrationConfigRepository: IntegrationConfigRepository
-    ) {
-        self.noteRepository = noteRepository
-        self.reminderRepository = reminderRepository
-        self.syncQueueRepository = syncQueueRepository
-        self.integrationConfigRepository = integrationConfigRepository
+    public init(inMemory: Bool = false) {
+        let persistence = PersistenceController(inMemory: inMemory)
+        self.persistence = persistence
+        let context = persistence.viewContext
+
+        let noteRepo = CoreDataNoteRepository(context: context)
+        let reminderRepo = CoreDataReminderRepository(context: context)
+        let syncQueueRepo = CoreDataSyncQueueRepository(context: context)
+        let integrationRepo = CoreDataIntegrationConfigRepository(context: context)
+
+        self.noteRepository = noteRepo
+        self.reminderRepository = reminderRepo
+        self.syncQueueRepository = syncQueueRepo
+        self.integrationConfigRepository = integrationRepo
 
         self.integrationRegistry = .shared
         self.oauthManager = .shared
         self.syncEngine = SyncEngine(
-            syncQueueRepo: syncQueueRepository,
-            noteRepo: noteRepository,
-            reminderRepo: reminderRepository
+            syncQueueRepo: syncQueueRepo,
+            noteRepo: noteRepo,
+            reminderRepo: reminderRepo
         )
     }
 }
 
-// MARK: - Preview / Test Container
+// MARK: - Preview Support
 
 #if DEBUG
-/// Container com mocks para SwiftUI Previews e testes unitários.
-@MainActor
 public extension WatchAppContainer {
     static var preview: WatchAppContainer {
-        WatchAppContainer(
-            noteRepository: MockNoteRepository(),
-            reminderRepository: MockReminderRepository(),
-            timerRepository: MockTimerRepository(),
-            userProfileRepository: MockUserProfileRepository(),
-            habitLogRepository: MockHabitLogRepository(),
-            conversationRepository: MockConversationRepository(),
-            syncQueueRepository: MockSyncQueueRepository()
-        )
+        WatchAppContainer(inMemory: true)
     }
 }
 
-// MARK: - Mock Repositories
-
-final class MockNoteRepository: NoteRepository {
-    var notes: [Note] = [
-        Note(rawText: "Reunião amanhã às 14h com o time de design", category: "trabalho"),
-        Note(rawText: "Comprar proteína depois do treino", tags: ["saude"]),
-    ]
-    func save(_ note: Note) async throws { notes.append(note) }
-    func update(_ note: Note) async throws { notes = notes.map { $0.id == note.id ? note : $0 } }
-    func delete(id: UUID) async throws { notes.removeAll { $0.id == id } }
-    func fetchAll() async throws -> [Note] { notes }
-    func fetchByDate(_ date: Date) async throws -> [Note] { notes }
-    func search(query: String) async throws -> [Note] {
-        notes.filter { $0.rawText.localizedCaseInsensitiveContains(query) }
+public extension iOSAppContainer {
+    static var preview: iOSAppContainer {
+        iOSAppContainer(inMemory: true)
     }
-    func fetchUnsyncedNotes() async throws -> [Note] { notes.filter { !$0.isSynced } }
-    func markSynced(id: UUID, externalID: String, connectorID: String) async throws {
-        notes = notes.map {
-            guard $0.id == id else { return $0 }
-            var updated = $0
-            updated.externalIDs[connectorID] = externalID
-            updated.isSynced = true
-            return updated
-        }
-    }
-}
-
-final class MockReminderRepository: ReminderRepository {
-    var reminders: [Reminder] = [
-        Reminder(title: "Beber água", triggerDate: Date().addingTimeInterval(3600), repeatInterval: 3600, isProactive: true),
-        Reminder(title: "Remédio das 8h", triggerDate: Calendar.current.date(bySettingHour: 8, minute: 0, second: 0, of: Date())!),
-    ]
-    func save(_ reminder: Reminder) async throws { reminders.append(reminder) }
-    func update(_ reminder: Reminder) async throws { reminders = reminders.map { $0.id == reminder.id ? reminder : $0 } }
-    func delete(id: UUID) async throws { reminders.removeAll { $0.id == id } }
-    func fetchAll() async throws -> [Reminder] { reminders }
-    func fetchPending() async throws -> [Reminder] { reminders.filter { !$0.isCompleted } }
-    func fetchByDate(_ date: Date) async throws -> [Reminder] { reminders }
-    func markCompleted(id: UUID) async throws {
-        reminders = reminders.map {
-            guard $0.id == id else { return $0 }
-            var updated = $0
-            updated.completedAt = Date()
-            return updated
-        }
-    }
-}
-
-final class MockTimerRepository: TimerRepository {
-    var timers: [TimerRecord] = []
-    func save(_ timer: TimerRecord) async throws { timers.append(timer) }
-    func update(_ timer: TimerRecord) async throws { timers = timers.map { $0.id == timer.id ? timer : $0 } }
-    func fetchActive() async throws -> TimerRecord? { timers.first { $0.isRunning } }
-    func fetchAll(limit: Int) async throws -> [TimerRecord] { Array(timers.prefix(limit)) }
-    func markCompleted(id: UUID) async throws {
-        timers = timers.map {
-            guard $0.id == id else { return $0 }
-            var updated = $0
-            updated.completedAt = Date()
-            return updated
-        }
-    }
-}
-
-final class MockUserProfileRepository: UserProfileRepository {
-    var profile: UserProfile = .default
-    func load() -> UserProfile { profile }
-    func save(_ profile: UserProfile) { self.profile = profile }
-}
-
-final class MockHabitLogRepository: HabitLogRepository {
-    var log = HabitLog()
-    func logForToday() async throws -> HabitLog { log }
-    func save(_ log: HabitLog) async throws { self.log = log }
-    func fetchLast(days: Int) async throws -> [HabitLog] { [log] }
-    func incrementHydration() async throws { log.hydrationCheckins += 1 }
-    func incrementPosture() async throws { log.postureBreaks += 1 }
-    func incrementPomodoro() async throws { log.pomodoroCount += 1 }
-    func incrementNotes() async throws { log.notesCreated += 1 }
-}
-
-final class MockConversationRepository: ConversationRepository {
-    var conversations: [Conversation] = []
-    func save(_ c: Conversation) async throws { conversations.append(c) }
-    func fetchAll(limit: Int) async throws -> [Conversation] { Array(conversations.prefix(limit)) }
-    func fetchByIntent(_ intent: IntentType, limit: Int) async throws -> [Conversation] {
-        Array(conversations.filter { $0.intentType == intent }.prefix(limit))
-    }
-    func deleteAll() async throws { conversations = [] }
-}
-
-final class MockSyncQueueRepository: SyncQueueRepository {
-    var items: [SyncQueueItem] = []
-    func enqueue(_ item: SyncQueueItem) async throws { items.append(item) }
-    func fetchPending(connectorID: String?) async throws -> [SyncQueueItem] {
-        items.filter { $0.status == .pending && (connectorID == nil || $0.connectorID == connectorID) }
-    }
-    func updateStatus(id: UUID, status: SyncStatus) async throws {
-        items = items.map { $0.id == id ? SyncQueueItem(id: $0.id, entityType: $0.entityType, entityID: $0.entityID, operation: $0.operation, connectorID: $0.connectorID, status: status, retryCount: $0.retryCount) : $0 }
-    }
-    func scheduleRetry(id: UUID) async throws {}
-    func remove(id: UUID) async throws { items.removeAll { $0.id == id } }
-    func countPending() async throws -> Int { items.filter { $0.status == .pending }.count }
 }
 #endif

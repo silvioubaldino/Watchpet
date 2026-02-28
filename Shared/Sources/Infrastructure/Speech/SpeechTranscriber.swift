@@ -159,14 +159,19 @@ public final class SpeechTranscriber: NSObject, ObservableObject {
             }
         }
 
+        #if targetEnvironment(simulator)
+        audioEngine.reset()
+        #endif
+
         let inputNode = audioEngine.inputNode
         var format = inputNode.outputFormat(forBus: 0)
         
-        // Contorno para bug clássico de áudio do Simulador (0Hz sample rate / -10851)
+        // Contorno agressivo para bug clássico de áudio do Simulador (0Hz sample rate / -10851)
         if format.sampleRate == 0 {
             format = AVAudioFormat(standardFormatWithSampleRate: 44100, channels: 1) ?? format
         }
 
+        inputNode.removeTap(onBus: 0) // Limpa taps residuais
         inputNode.installTap(onBus: 0, bufferSize: 1024, format: format) { [weak self] buffer, _ in
             self?.recognitionRequest?.append(buffer)
         }

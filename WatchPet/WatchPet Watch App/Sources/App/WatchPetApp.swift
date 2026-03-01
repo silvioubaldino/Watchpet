@@ -8,14 +8,14 @@ import SwiftUI
 @main
 struct WatchPetApp: App {
 
-    @StateObject private var container = WatchAppContainer()
+    @State private var container = WatchAppContainer()
     @StateObject private var connectivity = WatchConnectivityBridge.shared
     @StateObject private var petStateManager = PetStateManager()
 
     var body: some Scene {
         WindowGroup {
             MainWatchView()
-                .environmentObject(container)
+                .environment(container)
                 .environmentObject(connectivity)
                 .environmentObject(petStateManager)
                 .onAppear {
@@ -29,7 +29,7 @@ struct WatchPetApp: App {
 
 struct MainWatchView: View {
 
-    @EnvironmentObject var container: WatchAppContainer
+    @Environment(WatchAppContainer.self) var container
     @EnvironmentObject var petStateManager: PetStateManager
     @StateObject private var voiceVM: VoiceInteractionViewModel
 
@@ -54,7 +54,7 @@ struct MainWatchView: View {
 
             // Tab 4 — Notas
             NotesView()
-                .environmentObject(container)
+                .environment(container)
                 .tag(3)
         }
         .tabViewStyle(.page)
@@ -88,7 +88,7 @@ struct MainWatchView: View {
 
 struct MainPetVoiceView: View {
 
-    @EnvironmentObject var container: WatchAppContainer
+    @Environment(WatchAppContainer.self) var container
     @EnvironmentObject var petStateManager: PetStateManager
     @ObservedObject var voiceVM: VoiceInteractionViewModel
 
@@ -322,6 +322,6 @@ struct AudioWaveformView: View {
 
 #Preview("Main Watch") {
     MainWatchView()
-        .environmentObject(WatchAppContainer.preview)
+        .environment(WatchAppContainer.preview)
         .environmentObject(WatchConnectivityBridge.shared)
 }

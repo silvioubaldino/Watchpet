@@ -164,9 +164,10 @@ struct MainPetVoiceView: View {
 
             case .error(let msg):
                 Text(msg)
-                    .font(.caption2)
+                    .font(.system(size: 10))
                     .foregroundStyle(.red)
-                    .lineLimit(2)
+                    .lineLimit(nil)
+                    .multilineTextAlignment(.center)
             }
         }
         .frame(height: 38)
@@ -236,7 +237,7 @@ struct PetAvatarView: View {
                     )
             }
             .onAppear { isAnimating = true }
-            .onChange(of: emotion) { _ in
+            .onChange(of: emotion) { oldValue, newValue in
                 isAnimating = false
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                     isAnimating = true

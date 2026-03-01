@@ -2,7 +2,7 @@ import WatchPetShared
 import SwiftUI
 
 struct NotesView: View {
-    @EnvironmentObject var container: WatchAppContainer
+    @Environment(WatchAppContainer.self) var container
     @State private var notes: [Note] = []
     
     var body: some View {
@@ -66,5 +66,5 @@ struct NotesView: View {
 
 #Preview {
     NotesView()
-        .environmentObject(WatchAppContainer.preview)
+        .environment(WatchAppContainer.preview)
 }
